@@ -1,0 +1,218 @@
+rules_version = '2';
+
+// Firestore Security Rules for Smokeville Restaurant
+// 
+// HOW TO APPLY THESE RULES:
+// 1. Go to Firebase Console: https://console.firebase.google.com/
+// 2. Select your Smokeville project
+// 3. Click "Firestore Database" → "Rules" tab
+// 4. Copy and paste this entire file
+// 5. Click "Publish"
+//
+// IMPORTANT: Update the admin UID on lines 21, 31, 42, 52, 60, 67
+// Current admin UID: iHnO8vOgbWUqvglNJioU5KMH6IB3
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ==================== USERS COLLECTION (CRITICAL!) ====================
+    // This is needed for user authentication and profile management
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if request.auth != null && 
+                     request.auth.uid == userId;
+      
+      // Users can create and update their own profile
+      allow create, update: if request.auth != null && 
+                               request.auth.uid == userId;
+      
+      // Admins can read all user profiles
+      allow read: if request.auth != null && 
+                     request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+    }
+    
+    // ==================== ORDERS COLLECTION ====================
+    match /orders/{orderId} {
+      // Users can read their own orders
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+      
+      // Users can create their own orders
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.userId;
+      
+      // Users can update their own orders (for cancellations, etc.)
+      allow update: if request.auth != null && 
+                       request.auth.uid == resource.data.userId;
+      
+      // Admins can read/write ALL orders
+      allow read, write: if request.auth != null && 
+                            request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+    }
+    
+    // ==================== BOOKINGS COLLECTION ====================
+    match /bookings/{bookingId} {
+      // Users can read their own bookings
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+      
+      // Users can create their own bookings
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.userId;
+      
+      // Users can update their own bookings
+      allow update: if request.auth != null && 
+                       request.auth.uid == resource.data.userId;
+      
+      // Admins can read/write ALL bookings
+      allow read, write: if request.auth != null && 
+                            request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+    }
+    
+    // ==================== REVIEWS COLLECTION ====================
+    match /reviews/{reviewId} {
+      // Anyone can read reviews (public)
+      allow read: if true;
+      
+      // Authenticated users can create reviews
+      allow create: if request.auth != null;
+      
+      // Users can update/delete their own reviews
+      allow update, delete: if request.auth != null && 
+                               request.auth.uid == resource.data.userId;
+      
+      // Admins can delete any review (moderation)
+      allow delete: if request.auth != null && 
+                       request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+    }
+    
+    // ==================== NEWSLETTER COLLECTION ====================
+    match /newsletter/{subscriberId} {
+      // Anyone can subscribe to newsletter
+      allow create: if true;
+      
+      // Admins can read all subscribers and manage subscriptions
+      allow read, delete: if request.auth != null && 
+                             request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+    }
+    
+    // ==================== MENU COLLECTION ====================
+    match /menu/{menuId} {
+      // Anyone can read menu items (public menu)
+      allow read: if true;
+      
+      // Only admins can add/edit/delete menu items
+      allow write: if request.auth != null && 
+                      request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+    }
+    
+    // ==================== GALLERY COLLECTION ====================
+    match /gallery/{imageId} {
+      // Anyone can view gallery images
+      allow read: if true;
+      
+      // Only admins can add/delete gallery images
+      allow write: if request.auth != null && 
+                      request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+    }
+    
+    // ==================== USER PROFILES (Optional) ====================
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if request.auth != null && 
+                     request.auth.uid == userId;
+      
+      // Users can create/update their own profile
+      allow create, update: if request.auth != null && 
+                               request.auth.uid == userId;
+      
+      // Admins can read all user profiles
+      allow read: if request.auth != null && 
+                     request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+    }
+  }
+}
+
+// ==================== STORAGE RULES ====================
+// 
+// For Firebase Storage (images), also update storage rules:
+// Go to Firebase Console → Storage → Rules tab
+//
+// storage.rules:
+//
+// rules_version = '2';
+// service firebase.storage {
+//   match /b/{bucket}/o {
+//     
+//     // Gallery images
+//     match /gallery/{imageId} {
+//       // Anyone can read
+//       allow read: if true;
+//       // Only admins can upload/delete
+//       allow write: if request.auth != null && 
+//                       request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+//     }
+//     
+//     // Menu images
+//     match /menu/{imageId} {
+//       // Anyone can read
+//       allow read: if true;
+//       // Only admins can upload/delete
+//       allow write: if request.auth != null && 
+//                       request.auth.uid == 'iHnO8vOgbWUqvglNJioU5KMH6IB3';
+//     }
+//     
+//     // Order receipts/documents
+//     match /orders/{orderId}/{document} {
+//       // Users can read their own order documents
+//       allow read: if request.auth != null;
+//       // System can write (server-side)
+//       allow write: if request.auth != null;
+//     }
+//   }
+// }
+
+// ==================== ADDING MORE ADMINS ====================
+//
+// To add more admin users, you have two options:
+//
+// OPTION 1: Add multiple UIDs (simple but requires redeployment)
+// Replace single UID checks with a list check:
+//
+// function isAdmin() {
+//   return request.auth.uid in [
+//     'iHnO8vOgbWUqvglNJioU5KMH6IB3',
+//     'ANOTHER_ADMIN_UID_HERE',
+//     'YET_ANOTHER_UID'
+//   ];
+// }
+//
+// Then use: allow read, write: if request.auth != null && isAdmin();
+//
+// OPTION 2: Use custom claims (advanced, requires Cloud Functions)
+// Set admin custom claim via Cloud Function, then check:
+// allow read, write: if request.auth.token.admin == true;
+//
+// For now, stick with Option 1 for simplicity.
+
+// ==================== SECURITY BEST PRACTICES ====================
+//
+// ✅ DO:
+// - Always validate request.auth != null for authenticated operations
+// - Always validate ownership: request.auth.uid == resource.data.userId
+// - Use specific field validation for sensitive data
+// - Test rules thoroughly before going to production
+//
+// ❌ DON'T:
+// - Never use: allow read, write: if true; (except for truly public data)
+// - Don't expose sensitive user data (emails, phone numbers)
+// - Don't allow users to modify other users' data
+// - Don't hardcode secrets in rules
+//
+// 🔒 PRODUCTION CHECKLIST:
+// - [ ] Replace test mode rules with production rules
+// - [ ] Add proper data validation
+// - [ ] Test with different user roles
+// - [ ] Monitor security rules usage in Firebase Console
+// - [ ] Set up Firebase App Check for additional security
+// - [ ] Consider rate limiting via Cloud Functions
