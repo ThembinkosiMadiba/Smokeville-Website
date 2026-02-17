@@ -3,30 +3,15 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-// Firebase configuration
-// ⚠️ IMPORTANT: Replace these with your actual Firebase project credentials
-// 
-// To get your credentials:
-// 1. Go to https://console.firebase.google.com/
-// 2. Select your Smokeville project
-// 3. Click Settings (⚙️) → Project Settings
-// 4. Scroll to "Your apps" → Select your web app
-// 5. Copy the firebaseConfig values and paste them below
-//
-// Example:
-// apiKey: "AIzaSyC...",
-// authDomain: "smokeville-xxxxx.firebaseapp.com",
-// projectId: "smokeville-xxxxx",
-// etc.
-//
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDJxsjgMOy8vyBu-DZsohMKlLtP6NyRFS8",
-  authDomain: "smokeville-restaurant-af2fa.firebaseapp.com",
-  projectId: "smokeville-restaurant-af2fa",
-  storageBucket: "smokeville-restaurant-af2fa.firebasestorage.app",
-  messagingSenderId: "890057713085",
-  appId: "1:890057713085:web:a0bb922e58742fef6bded4",
-  measurementId: "G-JCV4SCCB4Q"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENTID
 };
 
 // Initialize Firebase
