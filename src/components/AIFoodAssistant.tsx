@@ -8,6 +8,8 @@ import { useCart } from '../contexts/CartContext';
 import { toast } from 'sonner@2.0.3';
 
 
+
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
