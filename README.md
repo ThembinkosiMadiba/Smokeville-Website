@@ -83,14 +83,6 @@ Create an optimized production build:
 npm run build
 ```
 
-### Preview Production Build
-
-Preview the production build locally:
-
-```bash
-npm run preview
-```
-
 ---
 
 ## 🔮 Future Improvements
