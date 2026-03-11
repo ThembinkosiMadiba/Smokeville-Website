@@ -1,7 +1,13 @@
 import { ReactNode } from 'react';
 import { motion } from 'motion/react';
 
-
+interface LiquidButtonProps {
+  children: ReactNode;
+  onClick?: () => void;
+  className?: string;
+  variant?: 'primary' | 'secondary' | 'success';
+  size?: 'sm' | 'md' | 'lg';
+}
 
 export function LiquidButton({ 
   children, 
