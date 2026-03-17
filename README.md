@@ -3,7 +3,7 @@
 
 A modern, responsive restaurant website built with React and Tailwind CSS. Smokeville offers an immersive dining experience showcasing delicious cuisine, elegant ambiance, and seamless online ordering capabilities.
 
-🌐 **Live Site:** [https://valentine-invintation.netlify.app/](https://smokeville.netlify.app/)
+🌐 **Live Site:** (https://smokeville.netlify.app/)
 
 ![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)
